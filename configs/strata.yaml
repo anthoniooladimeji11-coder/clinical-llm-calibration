@@ -20,13 +20,13 @@ strata:
       LLMs are expected to handle well and where aggregate calibration
       metrics are typically reported.
     inclusion_criteria:
-      - Source: MedQA and MedMCQA
+      - Source: MedQA (USMLE-style clinical vignettes only)
       - Condition prevalence: greater than 1 in 1000 in general population
       - Presentation: textbook or typical
     target_n: 800
     notes: >
-      MedQA and MedMCQA already skew toward common conditions by design.
-      We sample after excluding cases whose ground-truth diagnosis falls
+      MedQA already skews toward common conditions by design.
+      We will sample after excluding cases whose ground-truth diagnosis falls
       in our rare list.
 
   rare:
