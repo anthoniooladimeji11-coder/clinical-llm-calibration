@@ -1,0 +1,72 @@
+# =====================================================================
+# Stratum definitions — FROZEN before any model inference begins.
+# =====================================================================
+# This file defines what counts as common, rare, and high-acuity in
+# this study. Once locked, do not edit without versioning a new file
+# (strata_v2.yaml etc.) and re-running affected analyses.
+#
+# Last edited: 2026-05-17
+# Status: DRAFT v0.1 — to be locked at end of Week 1
+# =====================================================================
+
+version: "0.1"
+status: draft
+
+strata:
+
+  common:
+    description: >
+      Typical presentations of common conditions. These are the cases
+      LLMs are expected to handle well and where aggregate calibration
+      metrics are typically reported.
+    inclusion_criteria:
+      - Source: MedQA and MedMCQA
+      - Condition prevalence: greater than 1 in 1000 in general population
+      - Presentation: textbook or typical
+    target_n: 800
+    notes: >
+      MedQA and MedMCQA already skew toward common conditions by design.
+      We sample after excluding cases whose ground-truth diagnosis falls
+      in our rare list.
+
+  rare:
+    description: >
+      Rare diseases, defined per Orphanet criteria. These are where
+      we hypothesize the largest calibration gap.
+    inclusion_criteria:
+      - Source: RareBench
+      - Condition prevalence: less than 1 in 2000 (Orphanet definition)
+      - Must have a single defensible ground-truth diagnosis
+    target_n: 600
+    notes: >
+      RareBench is already curated for rare presentations. We use it
+      as-is, with light filtering for case quality.
+
+  high_acuity:
+    description: >
+      Time-critical, high-mortality, or high-morbidity presentations
+      where missed or delayed diagnosis causes severe harm.
+    inclusion_criteria:
+      - Source: PMC-Patients, filtered by ICD-10 codes
+      - ICD-10 categories included:
+          - I21 (acute myocardial infarction)
+          - I63 (cerebral infarction, ischemic stroke)
+          - I60-I62 (hemorrhagic stroke)
+          - A40-A41 (sepsis, septicaemia)
+          - I26 (pulmonary embolism)
+          - E10.1, E11.0 (diabetic ketoacidosis, hyperosmolar state)
+          - J81 (acute pulmonary oedema)
+          - K85 (acute pancreatitis)
+          - R57 (shock, not elsewhere classified)
+    target_n: 600
+    notes: >
+      High-acuity is operationalized via ICD codes rather than clinician
+      judgment to keep the filter reproducible.
+
+sampling:
+  random_seed: 42
+  total_target_n: 2000
+  exclusion_rules:
+    - Cases shorter than 50 words (insufficient context)
+    - Cases without a single defensible ground-truth diagnosis
+    - Duplicates across sources (text similarity greater than 0.95)

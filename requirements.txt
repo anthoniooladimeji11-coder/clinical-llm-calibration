@@ -1,0 +1,29 @@
+# Core
+numpy
+pandas
+pyyaml
+python-dotenv
+tqdm
+
+# Data
+datasets
+huggingface-hub
+
+# Models / inference
+groq
+requests
+
+# Analysis
+scipy
+scikit-learn
+matplotlib
+seaborn
+
+# Local model inference (we'll use this for MedGemma)
+llama-cpp-python
+
+# Stats
+statsmodels
+
+# Testing
+pytest

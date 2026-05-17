@@ -1,0 +1,35 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Environment / secrets
+.env
+.env.local
+*.key
+
+# Data and results (too big for git)
+data/raw/
+data/processed/
+results/
+*.csv
+*.parquet
+*.jsonl
+*.sqlite
+*.db
+
+# Model caches
+.cache/
+models/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
