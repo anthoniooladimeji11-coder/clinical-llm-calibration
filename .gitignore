@@ -33,3 +33,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Editable-install artifacts
+*.egg-info/
