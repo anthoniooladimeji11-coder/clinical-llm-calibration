@@ -66,3 +66,98 @@ Last updated: 2026-05-18
 ## D-011 — Pediatric exclusion at sampling stage, not filter stage
 - **Date:** 2026-05-18
 - **Reasoning:** Some pediatric cases survive the high-acuity filter. Harm rubric is adult-only. Cleanest place to enforce age constraint is during stratified sampling, where we already filter for case quality.
+
+## D-010: Native format per stratum (not forced multiple choice)
+**Date:** 2026-05-18
+**Decision:** MedQA stays multiple choice; RareBench and PMC stay
+open-ended. Don't generate distractors for the open-ended cases.
+**Alternatives considered:** Force everything to MC; force everything
+to open-ended.
+**Reason:** Generating defensible distractors for rare and high-acuity
+cases is its own methodological problem. Native format respects each
+dataset and is what recent papers in the field do.
+**Risk:** Grading is format-specific. We handle this with LLM-as-judge
+for open-ended.
+
+---
+
+## D-011: Ground truth representation per stratum
+**Date:** 2026-05-18
+**Decision:** Common = option letter + text; Rare = full disease name +
+phenotype/disease codes preserved; High-acuity = coarse condition tag
+(acute_mi, sepsis, etc.) plus the matched keyword.
+**Alternatives considered:** Extract specific diagnoses from PMC case
+text; use only the option letter for MedQA.
+**Reason:** Each stratum's natural ground truth is what we record.
+PMC coarse tags map cleanly to ICD-10 anchors for the harm matrix.
+**Risk:** PMC grading is coarse — model gets credit for naming any
+acute MI variant rather than the specific one in the case. Acceptable.
+
+---
+
+## D-012: LLM-as-judge for open-ended grading
+**Date:** 2026-05-18
+**Decision:** Use Llama 3.3 70B via Groq (free tier) to grade open-ended
+answers against ground truth. Audit 200 cases manually for IRR with
+the LLM judge.
+**Alternatives considered:** Strict string match; full manual grading;
+embedding similarity.
+**Reason:** Standard in 2024-2025 medical-LLM evaluation papers. Free
+under Groq free tier. Manual audit provides reviewer confidence.
+**Risk:** Judge model may be biased toward over-generous grading.
+Audit will quantify this.
+
+---
+
+## D-013: Pediatric exclusion for common stratum
+**Date:** 2026-05-18
+**Decision:** Regex-based filter drops MedQA cases that open with
+pediatric subjects (e.g. "A 3-month-old", "A newborn", "A 12-year-old").
+**Alternatives considered:** Keep pediatric cases, handle at harm-rating
+time.
+**Reason:** Harm rubric assumes adults. Filtering at sampling is
+cleaner than carrying a pediatric flag through every downstream step.
+1,693 / 10,178 cases dropped (~17%).
+**Risk:** Some edge-case wording may slip through. Spot checks looked
+clean.
+
+---
+
+## D-014: Balanced within-stratum sampling for high-acuity
+**Date:** 2026-05-18
+**Decision:** Cap each high-acuity condition at 70 cases. Take all
+available cases when fewer than 70 exist (ischemic_stroke n=20,
+acute_pulmonary_oedema n=29, diabetic_emergency n=43).
+**Alternatives considered:** Random sample 600 from the full pool
+(would have been ~210 sepsis cases).
+**Reason:** The whole paper is about stratum-specific failures. Each
+sub-condition needs representation to detect calibration gaps.
+**Risk:** Ischemic stroke n=20 gives wide CIs. Acknowledged in
+limitations.
+
+---
+
+## D-015: Rare quality filter — min 3 phenotypes + label-leakage check
+**Date:** 2026-05-18
+**Decision:** Drop rare cases with <3 phenotypes OR with any phenotype
+label >=70% similar to the ground-truth disease name.
+**Alternatives considered:** No filter; length-only filter; manual review.
+**Reason:** Cases with very few phenotypes or with diagnostic-finding
+labels are trivially easy. The filter dropped 111 / 1,121 cases (~10%).
+**Risk:** Some leaky pairs slip through (e.g. "Hyperphenylalaninemia"
+phenotype with "Phenylketonuria" diagnosis — same condition, low string
+similarity). Mentioned in discussion.
+
+---
+
+## D-016: Unequal final Ns across strata
+**Date:** 2026-05-18
+**Decision:** Accept 800/600/512 final stratum sizes. Do not downsample
+common/rare to match high-acuity.
+**Alternatives considered:** Equal Ns at 512.
+**Reason:** Throwing away 776 cases for balance hurts statistical power
+where we have it. Calibration metrics work fine with unequal Ns.
+**Risk:** Cross-stratum comparisons need to weight by stratum size or
+report separately. We do the latter.
+
+---
