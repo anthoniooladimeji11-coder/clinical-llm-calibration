@@ -11,15 +11,21 @@ __pycache__/
 .env.local
 *.key
 
-# Data and results (too big for git)
+# Editable-install artifacts
+*.egg-info/
+
+# Data and results (large files only)
 data/raw/
-data/processed/
 results/
 *.csv
 *.parquet
-*.jsonl
 *.sqlite
 *.db
+
+# JSONL files are gitignored EXCEPT metadata files,
+# which document what produced the JSONL
+*.jsonl
+!*.meta.json
 
 # Model caches
 .cache/
@@ -33,6 +39,3 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-
-# Editable-install artifacts
-*.egg-info/

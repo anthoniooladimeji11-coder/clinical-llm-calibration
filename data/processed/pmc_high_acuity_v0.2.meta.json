@@ -1,0 +1,22 @@
+{
+  "filter_version": "v0.2",
+  "config_version": "0.1",
+  "config_path": "configs/high_acuity_keywords.yaml",
+  "run_at_utc": "2026-05-18T13:19:14.363798+00:00",
+  "git_commit": "6a4505d12dba3e2fd76ed12b5d8dadd17f3c512d",
+  "source_dataset": "ncbi/Open-Patients (train split)",
+  "total_source_entries": 180142,
+  "total_pmc_entries_filtered": 1008,
+  "counts_per_condition": {
+    "sepsis": 350,
+    "acute_pancreatitis": 81,
+    "acute_mi": 213,
+    "hemorrhagic_stroke": 113,
+    "shock": 83,
+    "diabetic_emergency": 43,
+    "pulmonary_embolism": 76,
+    "ischemic_stroke": 20,
+    "acute_pulmonary_oedema": 29
+  },
+  "output_jsonl": "data/processed/pmc_high_acuity_v0.2.jsonl"
+}
