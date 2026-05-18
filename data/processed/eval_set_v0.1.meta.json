@@ -1,0 +1,46 @@
+{
+  "eval_set_version": "v0.1",
+  "run_at_utc": "2026-05-18T13:56:49.499076+00:00",
+  "git_commit": "6e3ed4ba0b4f319150f835ac0b60c90d2083b3dc",
+  "random_seed": 42,
+  "targets": {
+    "common": 800,
+    "rare": 600,
+    "high_acuity_max_per_condition": 70
+  },
+  "common": {
+    "raw_n": 10178,
+    "after_pediatric_filter_n": 8485,
+    "n_pediatric_dropped": 1693,
+    "sampled_n": 800
+  },
+  "rare": {
+    "raw_n": 1121,
+    "after_quality_filter_n": 1010,
+    "n_dropped_by_quality_filter": 111,
+    "sampled_n": 600
+  },
+  "high_acuity": {
+    "raw_n": 1008,
+    "max_per_condition": 70,
+    "per_condition_sampled_n": {
+      "sepsis": 70,
+      "acute_pancreatitis": 70,
+      "acute_mi": 70,
+      "hemorrhagic_stroke": 70,
+      "shock": 70,
+      "diabetic_emergency": 43,
+      "pulmonary_embolism": 70,
+      "ischemic_stroke": 20,
+      "acute_pulmonary_oedema": 29
+    },
+    "sampled_n": 512
+  },
+  "totals": {
+    "common": 800,
+    "rare": 600,
+    "high_acuity": 512,
+    "all": 1912
+  },
+  "output_jsonl": "data/processed/eval_set_v0.1.jsonl"
+}
