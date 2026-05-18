@@ -1,0 +1,157 @@
+# =====================================================================
+# High-acuity keyword filter — FROZEN before filtering begins.
+# =====================================================================
+# Defines the clinical keywords used to filter PMC-Patients case
+# narratives for the high-acuity stratum.
+#
+# Methodology notes:
+# - Each condition has multiple terms reflecting common clinical writing.
+# - We bias toward acute presentations by including qualifiers
+#   ("acute", "ST-elevation", "new-onset", etc.).
+# - Matching is case-insensitive and uses word boundaries (see filter code).
+# - A case is included if ANY keyword for ANY target condition matches.
+# - The condition tag attached to each case is the first matched condition.
+# - Inclusion is conservative: we prefer precision over recall, since
+#   we only need ~600 cases out of 167,000.
+#
+# Last edited: 2026-05-17
+# Status: DRAFT v0.1
+# =====================================================================
+
+version: "0.1"
+status: draft
+
+conditions:
+
+  acute_mi:
+    description: >
+      Acute myocardial infarction (ST-elevation MI, NSTEMI, acute coronary
+      syndrome with confirmed infarction).
+    icd10_anchor: I21
+    keywords:
+      - "STEMI"
+      - "ST-elevation myocardial infarction"
+      - "ST elevation myocardial infarction"
+      - "NSTEMI"
+      - "non-ST-elevation myocardial infarction"
+      - "acute myocardial infarction"
+      - "acute MI"
+      - "acute coronary syndrome"
+      - "acute anterior wall infarction"
+      - "acute inferior wall infarction"
+
+  ischemic_stroke:
+    description: >
+      Acute ischemic stroke (cerebral infarction). Excludes TIA and
+      old/chronic stroke.
+    icd10_anchor: I63
+    keywords:
+      - "acute ischemic stroke"
+      - "acute ischaemic stroke"
+      - "acute cerebral infarction"
+      - "acute cerebral infarct"
+      - "acute middle cerebral artery occlusion"
+      - "acute MCA occlusion"
+      - "large vessel occlusion"
+      - "acute stroke"
+
+  hemorrhagic_stroke:
+    description: >
+      Intracranial hemorrhage (intracerebral, subarachnoid).
+    icd10_anchor: I60-I62
+    keywords:
+      - "intracerebral hemorrhage"
+      - "intracerebral haemorrhage"
+      - "subarachnoid hemorrhage"
+      - "subarachnoid haemorrhage"
+      - "hemorrhagic stroke"
+      - "haemorrhagic stroke"
+      - "ruptured cerebral aneurysm"
+      - "spontaneous intracranial hemorrhage"
+
+  sepsis:
+    description: >
+      Sepsis or septic shock. Includes both adult and (when not pediatric)
+      septicaemia.
+    icd10_anchor: A40-A41
+    keywords:
+      - "septic shock"
+      - "severe sepsis"
+      - "sepsis"
+      - "septicaemia"
+      - "septicemia"
+      - "bacteremia with shock"
+      - "bacteraemia with shock"
+
+  pulmonary_embolism:
+    description: >
+      Acute pulmonary embolism, including massive and submassive PE.
+    icd10_anchor: I26
+    keywords:
+      - "acute pulmonary embolism"
+      - "massive pulmonary embolism"
+      - "submassive pulmonary embolism"
+      - "pulmonary embolism"
+      - "saddle embolus"
+      - "pulmonary thromboembolism"
+
+  diabetic_emergency:
+    description: >
+      Diabetic ketoacidosis or hyperosmolar hyperglycemic state.
+    icd10_anchor: E10.1, E11.0
+    keywords:
+      - "diabetic ketoacidosis"
+      - "DKA"
+      - "hyperosmolar hyperglycemic state"
+      - "hyperosmolar hyperglycaemic state"
+      - "HHS"
+      - "hyperosmolar nonketotic coma"
+
+  acute_pulmonary_oedema:
+    description: >
+      Acute pulmonary edema, including cardiogenic and noncardiogenic.
+    icd10_anchor: J81
+    keywords:
+      - "acute pulmonary edema"
+      - "acute pulmonary oedema"
+      - "flash pulmonary edema"
+      - "flash pulmonary oedema"
+      - "cardiogenic pulmonary edema"
+      - "cardiogenic pulmonary oedema"
+
+  acute_pancreatitis:
+    description: >
+      Acute pancreatitis (mild, moderate, or severe).
+    icd10_anchor: K85
+    keywords:
+      - "acute pancreatitis"
+      - "severe acute pancreatitis"
+      - "necrotizing pancreatitis"
+      - "necrotising pancreatitis"
+      - "hemorrhagic pancreatitis"
+      - "haemorrhagic pancreatitis"
+
+  shock:
+    description: >
+      Shock states not otherwise classified (cardiogenic, hypovolemic,
+      distributive, obstructive).
+    icd10_anchor: R57
+    keywords:
+      - "cardiogenic shock"
+      - "hypovolemic shock"
+      - "hypovolaemic shock"
+      - "distributive shock"
+      - "obstructive shock"
+      - "anaphylactic shock"
+      - "hemorrhagic shock"
+      - "haemorrhagic shock"
+
+exclusions:
+  # Patterns that, if present, EXCLUDE a case even if a keyword matched.
+  # These reduce false positives from history-only mentions.
+  patterns:
+    - "history of"
+    - "h/o"
+    - "previous"
+    - "remote history"
+    - "past medical history of"
