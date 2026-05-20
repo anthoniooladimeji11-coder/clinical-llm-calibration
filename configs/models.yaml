@@ -1,0 +1,58 @@
+# =====================================================================
+# Model lineup — FROZEN for the inference phase.
+# =====================================================================
+# Four open-source models spanning architectures and a medical
+# fine-tune. All free to run (Groq free tier + local Ollama).
+#
+# Last edited: 2026-05-19
+# Status: locked v0.1
+# =====================================================================
+
+version: "0.1"
+status: locked
+
+models:
+
+  llama-3.3-70b:
+    provider: groq
+    groq_model_id: "llama-3.3-70b-versatile"
+    family: llama
+    params_b: 70
+    medical_tuned: false
+    notes: Strongest open-weight general model in the lineup.
+
+  llama-3.1-8b:
+    provider: groq
+    groq_model_id: "llama-3.1-8b-instant"
+    family: llama
+    params_b: 8
+    medical_tuned: false
+    ollama_fallback: "llama3.1:8b"
+    notes: Small fast general model; also available locally via Ollama.
+
+  mixtral-8x7b:
+    provider: groq
+    groq_model_id: "mixtral-8x7b-32768"
+    family: mixtral
+    params_b: 47
+    medical_tuned: false
+    notes: Mixture-of-experts; different architecture for generalizability.
+
+  biomistral-7b:
+    provider: ollama
+    ollama_model_id: "cniongolo/biomistral"
+    family: mistral
+    params_b: 7
+    medical_tuned: true
+    notes: Mistral base, biomedical fine-tune on PubMed Central.
+
+excluded_models:
+  - name: medllama2
+    reason: >
+      Fine-tuned on MedQA, which is one of our strata. Test-set leakage
+      would inflate common-stratum performance. Excluded.
+  - name: natlas
+    reason: >
+      Nigerian federal government LLM. Out of scope for this paper's
+      international benchmark framing; candidate for future work on
+      African-context clinical LLMs.
