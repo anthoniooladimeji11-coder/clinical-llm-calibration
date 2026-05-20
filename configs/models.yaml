@@ -4,7 +4,7 @@
 # Four open-source models spanning architectures and a medical
 # fine-tune. All free to run (Groq free tier + local Ollama).
 #
-# Last edited: 2026-05-19
+# Last edited: 2026-05-19 (Mixtral -> Qwen3 swap)
 # Status: locked v0.1
 # =====================================================================
 
@@ -30,13 +30,15 @@ models:
     ollama_fallback: "llama3.1:8b"
     notes: Small fast general model; also available locally via Ollama.
 
-  mixtral-8x7b:
+  qwen3-32b:
     provider: groq
-    groq_model_id: "mixtral-8x7b-32768"
-    family: mixtral
-    params_b: 47
+    groq_model_id: "qwen/qwen3-32b"
+    family: qwen
+    params_b: 32
     medical_tuned: false
-    notes: Mixture-of-experts; different architecture for generalizability.
+    notes: >
+      Qwen3 32B (Alibaba). Replaced Mixtral 8x7B after Groq decommissioned
+      it. Different model family for cross-architecture generalizability.
 
   biomistral-7b:
     provider: ollama
