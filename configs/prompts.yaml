@@ -1,0 +1,61 @@
+# =====================================================================
+# Prompt templates — FROZEN before inference begins.
+# =====================================================================
+# Two templates: one for multiple-choice (common stratum), one for
+# open-ended diagnosis (rare + high-acuity strata).
+#
+# Design decisions (see DECISIONS.md D-018):
+#  - Chain-of-thought reasoning allowed ("Think step by step").
+#  - Verbalized confidence as integer 0-100 (maps to probability /100).
+#  - Identical prompt across all four models for fair comparison.
+#  - A tolerant parser extracts ANSWER/DIAGNOSIS + CONFIDENCE, with
+#    fallbacks, and flags parse failures per model.
+#
+# Placeholders: {vignette}, {option_a}, {option_b}, {option_c}, {option_d}
+#
+# Last edited: 2026-05-19
+# Status: locked v0.1
+# =====================================================================
+
+version: "0.1"
+status: locked
+
+system_prompt: >
+  You are an expert physician answering clinical diagnostic questions.
+  You reason carefully and report your confidence honestly.
+
+multiple_choice:
+  template: |
+    Read the clinical vignette and answer the question.
+
+    {vignette}
+
+    Options:
+    A) {option_a}
+    B) {option_b}
+    C) {option_c}
+    D) {option_d}
+
+    Think step by step. Then end your response with EXACTLY these two lines:
+    ANSWER: <single letter A, B, C, or D>
+    CONFIDENCE: <integer 0-100 = your probability that your answer is correct>
+
+open_ended:
+  template: |
+    Read the clinical vignette and give the single most likely diagnosis.
+
+    {vignette}
+
+    Think step by step. Then end your response with EXACTLY these two lines:
+    DIAGNOSIS: <the single most likely diagnosis, stated concisely>
+    CONFIDENCE: <integer 0-100 = your probability that your diagnosis is correct>
+
+parser:
+  # Primary patterns (strict format)
+  answer_pattern: 'ANSWER:\s*([A-D])'
+  diagnosis_pattern: 'DIAGNOSIS:\s*(.+?)(?:\n|$)'
+  confidence_pattern: 'CONFIDENCE:\s*(\d{1,3})'
+  # Qwen3 emits <think>...</think> blocks that must be stripped first.
+  strip_think_tags: true
+  # If strict parse fails, fall back to looser matching (documented in
+  # the parser code). Cases where even fallback fails are flagged.

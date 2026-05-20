@@ -178,3 +178,23 @@ The response parser must strip these before extracting answer +
 confidence. Noted for the inference parser.
 
 ---
+
+## D-018: Prompt design — CoT, verbalized 0-100 confidence, shared prompt
+**Date:** 2026-05-19
+**Decision:** One multiple-choice template (common stratum) and one
+open-ended template (rare + high-acuity). Chain-of-thought reasoning
+allowed. Verbalized confidence elicited as integer 0-100. Identical
+prompt across all four models. Tolerant parser with fallbacks; parse-
+failure rate reported per model.
+**Alternatives considered:** Bare answer (no CoT); word-scale confidence
+(low/med/high); per-model tuned prompts.
+**Reason:** CoT reflects real deployment and makes the "confidently
+wrong after reasoning" finding visible. 0-100 integer maps cleanly to a
+probability for calibration. Shared prompt keeps the cross-model
+comparison fair. Parse-failure rate is itself a reportable signal.
+**Risk:** BioMistral (small, weakly instruction-tuned) and Qwen3
+(emits <think> tags) may not follow the format reliably. Mitigated by a
+tolerant parser and a 20-case pilot before the full run.
+**Stored in:** `configs/prompts.yaml`
+
+---
