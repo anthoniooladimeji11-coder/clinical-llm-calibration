@@ -161,3 +161,20 @@ where we have it. Calibration metrics work fine with unequal Ns.
 report separately. We do the latter.
 
 ---
+
+## D-017: Qwen3 32B replaces Mixtral 8x7B
+**Date:** 2026-05-19
+**Decision:** Use Qwen3 32B (via Groq) as the fourth-architecture model
+instead of Mixtral 8x7B.
+**Alternatives considered:** gpt-oss-20b/120b (different lineage but
+naming risks confusion with GPT-4), Llama 4 Scout (still Llama family),
+allam-2-7b (Arabic-focused).
+**Reason:** Groq decommissioned `mixtral-8x7b-32768` (confirmed via API
+error). Qwen3 32B is a genuinely different model family (not Llama, not
+Mistral), well-benchmarked, and widely used in 2025-2026 research, so it
+preserves the cross-architecture generalizability check Mixtral provided.
+**Risk:** Qwen3 is a reasoning model that emits <think>...</think> blocks.
+The response parser must strip these before extracting answer +
+confidence. Noted for the inference parser.
+
+---
