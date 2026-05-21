@@ -198,3 +198,23 @@ tolerant parser and a 20-case pilot before the full run.
 **Stored in:** `configs/prompts.yaml`
 
 ---
+
+## D-019: MedGemma 4B replaces BioMistral 7B as the medical model
+**Date:** 2026-05-20
+**Decision:** Use MedGemma 4B (Google, Gemma 3 base, instruction-tuned)
+via Ollama as the medical-tuned model.
+**Alternatives considered:** BioMistral 7B (chosen first), Meditron-7B,
+MedGemma 27B, dropping the medical slot entirely.
+**Reason:** BioMistral returned empty or prompt-echoing output under our
+structured prompt — it is a base-style biomedical text model, not
+instruction-tuned for QA format. Tuning a BioMistral-specific prompt
+would break our shared-prompt fairness decision (D-018). MedGemma 4B is
+instruction-tuned, follows the identical prompt cleanly (verified:
+correct answer + ANSWER/CONFIDENCE format, no fallback), and fits the
+M1 Pro 16GB constraint (27B too large).
+**Risk:** MedGemma 4B is smaller (4B) than the other models. This is
+itself interesting — it tests whether a small medical-tuned model
+calibrates differently. Size difference noted in methods.
+**Verified:** scripts/18_test_medgemma.py
+
+---

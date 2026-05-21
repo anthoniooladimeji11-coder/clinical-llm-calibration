@@ -40,13 +40,16 @@ models:
       Qwen3 32B (Alibaba). Replaced Mixtral 8x7B after Groq decommissioned
       it. Different model family for cross-architecture generalizability.
 
-  biomistral-7b:
+  medgemma-4b:
     provider: ollama
-    ollama_model_id: "cniongolo/biomistral"
-    family: mistral
-    params_b: 7
+    ollama_model_id: "alibayram/medgemma:4b"
+    family: gemma
+    params_b: 4
     medical_tuned: true
-    notes: Mistral base, biomedical fine-tune on PubMed Central.
+    notes: >
+      MedGemma 4B (Google, Gemma 3 base), instruction-tuned for medical
+      text. Replaced BioMistral 7B, which returned empty/echoed output
+      under our structured prompt (not instruction-tuned for QA format).
 
 excluded_models:
   - name: medllama2
