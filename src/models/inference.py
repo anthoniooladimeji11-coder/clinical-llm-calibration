@@ -3,12 +3,14 @@ Unified model-calling interface.
 
 call_model(model_name, messages, ...) routes to Groq or Ollama based on
 configs/models.yaml, and returns a standardized ModelResponse regardless
-of backend.
+of backend. Groq calls retry with backoff on rate-limit (429) errors.
 
-This module does ONE thing: call a model and return raw output + logprobs.
+This module does ONE thing: call a model and return raw output.
 Prompt construction, parsing, caching, and self-consistency live elsewhere.
 """
 import os
+import re
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -21,6 +23,11 @@ load_dotenv()
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 
+# Rate-limit retry settings (Groq)
+MAX_RETRIES = 6
+DEFAULT_BACKOFF_SECONDS = 20.0
+BACKOFF_PADDING = 1.5  # add a little extra to the suggested wait
+
 
 @dataclass
 class TokenLogprob:
@@ -30,12 +37,12 @@ class TokenLogprob:
 
 @dataclass
 class ModelResponse:
-    model_name: str            # our nickname, e.g. "llama-3.3-70b"
-    text: str                  # full text output
-    provider: str              # "groq" or "ollama"
+    model_name: str
+    text: str
+    provider: str
     finish_reason: Optional[str] = None
-    token_logprobs: Optional[list[TokenLogprob]] = None  # answer-region logprobs
-    raw: dict = field(default_factory=dict)              # provider raw payload (trimmed)
+    token_logprobs: Optional[list[TokenLogprob]] = None
+    raw: dict = field(default_factory=dict)
 
 
 # ---- Config loading ----
@@ -77,6 +84,14 @@ def _groq_client():
     return _GROQ_CLIENT
 
 
+def _parse_retry_wait(error_message: str) -> float:
+    """Extract suggested wait seconds from a Groq 429 message."""
+    m = re.search(r"try again in ([\d.]+)s", error_message)
+    if m:
+        return float(m.group(1))
+    return DEFAULT_BACKOFF_SECONDS
+
+
 def _call_groq(
     model_name: str,
     spec: dict,
@@ -86,6 +101,8 @@ def _call_groq(
     seed: Optional[int],
     want_logprobs: bool,
 ) -> ModelResponse:
+    from groq import RateLimitError, APIError
+
     client = _groq_client()
     kwargs = dict(
         model=spec["groq_model_id"],
@@ -98,26 +115,45 @@ def _call_groq(
     if want_logprobs:
         kwargs["logprobs"] = True
 
-    resp = client.chat.completions.create(**kwargs)
-    choice = resp.choices[0]
-    text = choice.message.content or ""
+    last_err = None
+    for attempt in range(MAX_RETRIES):
+        try:
+            resp = client.chat.completions.create(**kwargs)
+            choice = resp.choices[0]
+            text = choice.message.content or ""
+            logprobs = None
+            if want_logprobs and getattr(choice, "logprobs", None):
+                content_lp = getattr(choice.logprobs, "content", None)
+                if content_lp:
+                    logprobs = [
+                        TokenLogprob(token=lp.token, logprob=lp.logprob)
+                        for lp in content_lp
+                    ]
+            return ModelResponse(
+                model_name=model_name,
+                text=text,
+                provider="groq",
+                finish_reason=choice.finish_reason,
+                token_logprobs=logprobs,
+                raw={"id": getattr(resp, "id", None)},
+            )
+        except RateLimitError as e:
+            last_err = e
+            wait = _parse_retry_wait(str(e)) + BACKOFF_PADDING
+            print(f"    [rate limit] {model_name}: waiting {wait:.1f}s "
+                  f"(attempt {attempt + 1}/{MAX_RETRIES})")
+            time.sleep(wait)
+        except APIError as e:
+            # Transient server errors: brief backoff then retry
+            last_err = e
+            wait = DEFAULT_BACKOFF_SECONDS
+            print(f"    [api error] {model_name}: {e}; waiting {wait:.1f}s "
+                  f"(attempt {attempt + 1}/{MAX_RETRIES})")
+            time.sleep(wait)
 
-    logprobs = None
-    if want_logprobs and getattr(choice, "logprobs", None):
-        content_lp = getattr(choice.logprobs, "content", None)
-        if content_lp:
-            logprobs = [
-                TokenLogprob(token=lp.token, logprob=lp.logprob)
-                for lp in content_lp
-            ]
-
-    return ModelResponse(
-        model_name=model_name,
-        text=text,
-        provider="groq",
-        finish_reason=choice.finish_reason,
-        token_logprobs=logprobs,
-        raw={"id": getattr(resp, "id", None)},
+    raise RuntimeError(
+        f"Groq call for {model_name} failed after {MAX_RETRIES} retries. "
+        f"Last error: {last_err}"
     )
 
 
@@ -147,15 +183,11 @@ def _call_ollama(
     r = requests.post(
         f"{OLLAMA_BASE_URL}/api/chat",
         json=payload,
-        timeout=300,
+        timeout=600,
     )
     r.raise_for_status()
     data = r.json()
     text = data.get("message", {}).get("content", "")
-
-    # Note: Ollama's chat endpoint does not return per-token logprobs in
-    # a standard way across all model builds. We capture None here and
-    # handle token-entropy UQ for Ollama models separately if needed.
     return ModelResponse(
         model_name=model_name,
         text=text,
@@ -176,12 +208,6 @@ def call_model(
     seed: Optional[int] = None,
     want_logprobs: bool = False,
 ) -> ModelResponse:
-    """
-    Call a model by our nickname (from configs/models.yaml) and return a
-    standardized ModelResponse.
-
-    messages: list of {"role": "system"|"user"|"assistant", "content": str}
-    """
     spec = get_model_spec(model_name)
     provider = spec["provider"]
     if provider == "groq":
