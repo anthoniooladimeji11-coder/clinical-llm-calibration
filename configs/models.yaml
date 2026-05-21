@@ -13,32 +13,29 @@ status: locked
 
 models:
 
-  llama-3.3-70b:
-    provider: groq
-    groq_model_id: "llama-3.3-70b-versatile"
-    family: llama
-    params_b: 70
-    medical_tuned: false
-    notes: Strongest open-weight general model in the lineup.
-
   llama-3.1-8b:
-    provider: groq
-    groq_model_id: "llama-3.1-8b-instant"
+    provider: ollama
+    ollama_model_id: "llama3.1:8b"
     family: llama
     params_b: 8
     medical_tuned: false
-    ollama_fallback: "llama3.1:8b"
-    notes: Small fast general model; also available locally via Ollama.
+    notes: General model (Meta). Runs locally via Ollama.
 
-  qwen3-32b:
-    provider: groq
-    groq_model_id: "qwen/qwen3-32b"
+  qwen2.5-7b:
+    provider: ollama
+    ollama_model_id: "qwen2.5:7b"
     family: qwen
-    params_b: 32
+    params_b: 7
     medical_tuned: false
-    notes: >
-      Qwen3 32B (Alibaba). Replaced Mixtral 8x7B after Groq decommissioned
-      it. Different model family for cross-architecture generalizability.
+    notes: General model (Alibaba). Different family for architecture diversity.
+
+  gemma2-9b:
+    provider: ollama
+    ollama_model_id: "gemma2:9b"
+    family: gemma
+    params_b: 9
+    medical_tuned: false
+    notes: General model (Google). Largest in the local lineup.
 
   medgemma-4b:
     provider: ollama
@@ -48,8 +45,7 @@ models:
     medical_tuned: true
     notes: >
       MedGemma 4B (Google, Gemma 3 base), instruction-tuned for medical
-      text. Replaced BioMistral 7B, which returned empty/echoed output
-      under our structured prompt (not instruction-tuned for QA format).
+      text. The medical-tuned model in the lineup.
 
 excluded_models:
   - name: medllama2
