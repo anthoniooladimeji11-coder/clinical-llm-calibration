@@ -218,3 +218,32 @@ calibrates differently. Size difference noted in methods.
 **Verified:** scripts/18_test_medgemma.py
 
 ---
+
+## D-020: Self-consistency parameters (N=5, temp 0.7)
+**Date:** 2026-05-20
+**Decision:** Per (case, model): 1 deterministic call (temp 0.0) for the
+primary graded answer, plus N=5 sampled calls (temp 0.7, distinct seeds)
+for the UQ signals. Total 6 calls per (case, model).
+**Alternatives considered:** N=3 (faster, ~2.5-day Qwen grind vs ~4-day).
+**Reason:** The paper's core claim is about the behavior of uncertainty
+signals. Self-consistency variance and semantic entropy both need enough
+samples for a reliable estimate; N=5 gives more resolution than N=3.
+Time is the only cost (run is unattended, resumable via cache), and we
+are not on a hard deadline.
+**Risk:** Longer inference run, especially for Qwen3 (token-heavy). Made
+tractable by rate-limit backoff and the resumable cache.
+
+## D-021: Rate-limit handling (Groq free tier)
+**Date:** 2026-05-20
+**Decision:** Groq calls retry up to 6 times with backoff. On a 429, we
+parse the suggested wait from the error and sleep that long (plus
+padding) before retrying. Ollama (local) needs no rate limiting.
+**Reason:** Groq free tier caps tokens-per-minute (e.g. Qwen3 at 6,000
+TPM). Qwen3's long <think> blocks (~3,000 tokens/call) exceed this in
+two consecutive calls. Without backoff the full run would crash. With
+it, the run self-throttles and completes unattended.
+**Documented constraint:** Groq free-tier TPM limits make the full
+inference run take several days, dominated by Qwen3. This is a practical
+constraint of the zero-budget open-model setup, noted in methods.
+
+---
