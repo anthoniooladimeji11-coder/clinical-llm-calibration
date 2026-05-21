@@ -29,7 +29,7 @@ results/
 
 # Model caches
 .cache/
-models/
+/models/
 
 # OS
 .DS_Store
