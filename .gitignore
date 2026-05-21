@@ -39,3 +39,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Harm matrix PDFs / exports (derivable)
+data/harm_matrix/
