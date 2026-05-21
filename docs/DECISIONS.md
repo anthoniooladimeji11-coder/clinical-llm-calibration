@@ -247,3 +247,28 @@ inference run take several days, dominated by Qwen3. This is a practical
 constraint of the zero-budget open-model setup, noted in methods.
 
 ---
+
+## D-022: All-local small-model lineup (dropped Groq big models)
+**Date:** 2026-05-21
+**Decision:** Run four small open models entirely locally via Ollama:
+Llama 3.1 8B, Qwen2.5 7B, Gemma2 9B, MedGemma 4B. Dropped Llama 3.3 70B
+and Qwen3 32B (Groq).
+**Alternatives considered:** Groq free tier (hit 100k tokens/day/model
+hard limit — full run would take ~80 days/model); Groq Dev Tier (~$10-20,
+but project has zero budget); trickle big models over weeks.
+**Reason:** Groq free-tier daily token cap makes the full run infeasible
+in reasonable calendar time, and there is no budget for paid tier. The
+M1 Pro 16GB cannot run 32B-70B models. Four small models that fit in
+16GB give architecture diversity (Llama, Qwen, Gemma families) at zero
+cost with no rate limits — the full run becomes a single overnight job.
+**Reframe:** Paper becomes "calibration failure in small open-weight
+clinical LLMs deployable on consumer hardware" — more relevant to
+low-resource health settings (aligns with the World Bank/GSBI context),
+not less.
+**Risk:** Cannot speak to large-model (>9B) behavior. Noted explicitly
+in limitations as future work. Pilot suggests the overconfidence-on-
+long-tail effect is, if anything, stronger in small models.
+**Verified:** scripts/19_pilot_run.py — 42/42 parse success, both ready
+models, all strata.
+
+---
