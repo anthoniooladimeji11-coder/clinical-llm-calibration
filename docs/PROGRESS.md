@@ -1,64 +1,45 @@
 # Project Progress
 
-Last updated: 2026-05-18
+Last updated: 2026-05-21
 
 ## Phase overview
 
 | Phase | Description | Status | Notes |
 |------|-------------|--------|-------|
-| 0 | Scaffolding (repo, venv, git, configs) | done | All scaffolding committed. |
-| 1 | Data assembly | **done** | Eval set v0.1 locked: 1,912 cases. |
-| 2 | Inference (4 models x 1,912 cases) | next | Groq API setup pending. |
-| 3 | UQ computation | not started | Token entropy, semantic entropy, self-consistency, verbalized. |
+| 0 | Scaffolding | done | |
+| 1 | Data assembly | done | Eval set v0.1 locked: 1,912 cases. |
+| 2 | Inference (4 local models) | **running** | 2 of 4 models grinding; 2 pending download. |
+| 3 | Answer grading | next | LLM-judge vs ontology-fuzzy decision pending. |
 | 4 | Calibration analysis | not started | ECE + harm-weighted ECE per stratum. |
-| 5 | Abstention frontier | not started | Cost-asymmetric curves. |
-| 6 | Harm matrix rating | awaiting Efosa | Rubric v0.1 sent; rating happens in weeks 5-6 from inference outputs. |
-| 7 | Writing | not started | Target venue: npj Digital Medicine. |
+| 5 | Abstention frontier | not started | |
+| 6 | Harm matrix rating | awaiting Efosa + graded pairs | Rubric v0.2 in review. |
+| 7 | Writing | not started | Target: npj Digital Medicine. |
 
-## Phase 1 (data assembly) — complete
+## Models (all local via Ollama)
 
-| Step | Status | Output |
-|------|--------|--------|
-| Stratum definitions config | locked v0.1 | `configs/strata.yaml` |
-| Harm rubric config | draft v0.1 (sent to Efosa) | `configs/harm_rubric.yaml` |
-| MedQA exploration | done | 10,178 train cases via `GBaker/MedQA-USMLE-4-options` |
-| MedMCQA exploration | rejected | Mostly basic-science, not clinical vignettes |
-| RareBench: HPO ontology + converter | done | `src/data/rarebench.py`, 1,121 convertible cases |
-| PMC-Patients: keyword filter v0.2 | locked | `src/data/pmc_patients.py`, 1,008 filtered cases |
-| Unified Case schema | locked | `src/data/schema.py` |
-| Per-source loaders | done | `src/data/loaders.py` |
-| Stratum-specific filters | done | `src/data/filters.py` (pediatric, rare quality) |
-| Locked evaluation set v0.1 | done | `data/processed/eval_set_v0.1.jsonl` |
+| Model | Family | Params | Medical | Status |
+|-------|--------|--------|---------|--------|
+| llama-3.1-8b | Llama | 8B | no | downloaded, running |
+| medgemma-4b | Gemma | 4B | yes | downloaded, running |
+| qwen2.5-7b | Qwen | 7B | no | pending download |
+| gemma2-9b | Gemma | 9B | no | pending download |
 
-## Evaluation set v0.1 — final composition
+## Inference run
 
-| Stratum | Source | n | Notes |
-|---------|--------|---|-------|
-| Common | MedQA (post-pediatric filter) | 800 | sampled from 8,485 |
-| Rare | RareBench (post-quality filter) | 600 | sampled from 1,010 |
-| High-acuity | PMC-Patients (balanced by condition) | 512 | capped 70 per condition |
-| **Total** | | **1,912** | |
+- Script: `scripts/20_run_inference.py` (resumable, crash-tolerant)
+- Per case-model: 1 deterministic + 5 sampled calls (N=5, temp 0.7)
+- Eval set: 1,912 cases -> ~11,500 calls per model
+- Cache: `results/inference_cache.sqlite` (SQLite, idempotent)
+- Estimated: several days on M1 Pro for all 4 models
 
-High-acuity per-condition breakdown:
+## Harm rubric
 
-| Condition | n |
-|-----------|---|
-| sepsis | 70 |
-| acute_mi | 70 |
-| acute_pancreatitis | 70 |
-| hemorrhagic_stroke | 70 |
-| shock | 70 |
-| pulmonary_embolism | 70 |
-| diabetic_emergency | 43 |
-| acute_pulmonary_oedema | 29 |
-| ischemic_stroke | 20 |
+- v0.1: drafted, sent to Efosa
+- v0.2: standard-hospital + emergency/non-emergency axis (Efosa feedback)
+- Status: draft, awaiting Efosa confirmation, then lock
 
-## Figures so far
+## Outstanding
 
-- Figure 1 (draft v0.2): dataset flow diagram — `figures/dataset_flow_v0.2.png`
-
-## External dependencies / outstanding
-
-- Efosa's review of harm rubric v0.1 (sent 2026-05-17; expected within ~1 week)
-- Groq API key needed before inference phase
-- Cloudflare WARP currently on (HuggingFace access via Nigerian ISP needed it)
+- Efosa confirmation of rubric v0.2
+- Download qwen2.5-7b + gemma2-9b (blocked by network)
+- Decide grading approach (LLM-judge vs ontology+fuzzy hybrid)
