@@ -272,3 +272,25 @@ long-tail effect is, if anything, stronger in small models.
 models, all strata.
 
 ---
+
+## D-023: Trimmed eval set (600 cases) and N=3 for local-compute tractability
+**Date:** 2026-05-22
+**Decision:** Run inference on a 600-case subset (200 common / 200 rare /
+200 high-acuity, sampled with seed 42 from eval_set_v0.1) with N=3
+self-consistency samples instead of N=5.
+**Alternatives considered:** Full 1,912 cases at N=5 (the original plan);
+N=2 + 300 cases (too weak for UQ); spreading the full run over many days.
+**Reason:** Local inference on an M1 Pro 16GB runs ~1.5-2 min/case/model.
+The full set at N=5 would take 1-2 weeks of dedicated machine time, which
+is not feasible on the author's only computer. 600 cases keeps ~200 per
+stratum (adequate for per-stratum ECE confidence intervals) and N=3 keeps
+self-consistency / semantic-entropy estimates legitimate (N=3 is the
+accepted floor; N=2 is not). Inference runs in resumable ~1-hour sessions
+via the SQLite cache.
+**Risk:** Smaller per-stratum N widens calibration confidence intervals;
+N=3 gives coarser UQ resolution than N=5. Both noted in limitations.
+High-acuity sub-conditions become small (will report per-condition n).
+**Artifacts:** eval_set_v0.2_fast.jsonl + .meta.json; D-014/D-016 sizes
+superseded for the inference run.
+
+---

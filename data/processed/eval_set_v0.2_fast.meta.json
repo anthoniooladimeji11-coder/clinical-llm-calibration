@@ -1,0 +1,14 @@
+{
+  "eval_set_version": "v0.2_fast",
+  "derived_from": "data/processed/eval_set_v0.1.jsonl",
+  "seed": 42,
+  "per_stratum_target": 200,
+  "counts": {
+    "common": 200,
+    "rare": 200,
+    "high_acuity": 200
+  },
+  "total": 600,
+  "run_at_utc": "2026-05-24T12:29:48.642484+00:00",
+  "reason": "Trimmed for tractable local inference (1-hour sessions, N=3)."
+}

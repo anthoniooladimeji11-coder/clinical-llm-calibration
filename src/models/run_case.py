@@ -18,7 +18,7 @@ from src.models.prompts import build_messages
 
 
 BASE_SEED = 42
-N_SAMPLES = 5
+N_SAMPLES = 3
 DETERMINISTIC_TEMP = 0.0
 SAMPLING_TEMP = 0.7
 MAX_TOKENS_DEFAULT = 1024  # uniform; Qwen2.5 is not a reasoning model
