@@ -1,0 +1,14 @@
+{
+  "eval_set_version": "v0.3_fast",
+  "derived_from": "data/processed/eval_set_v0.1.jsonl",
+  "seed": 42,
+  "per_stratum_target": 100,
+  "counts": {
+    "common": 100,
+    "rare": 100,
+    "high_acuity": 100
+  },
+  "total": 300,
+  "run_at_utc": "2026-05-27T14:32:57.392223+00:00",
+  "reason": "Pilot-scale set (300 cases) for tractable local inference."
+}

@@ -33,7 +33,7 @@ from src.models.inference import get_model_spec
 # All four eventually; only those present in Ollama will actually run.
 MODELS = ["llama-3.1-8b", "qwen2.5-7b", "gemma2-9b", "medgemma-4b"]
 
-EVAL_SET = Path("data/processed/eval_set_v0.2_fast.jsonl")
+EVAL_SET = Path("data/processed/eval_set_v0.3_fast.jsonl")
 PROGRESS_LOG = Path("results/inference_progress.log")
 FAILURE_LOG = Path("results/inference_failures.jsonl")
 CALLS_PER_CASE = 1 + N_SAMPLES  # 1 deterministic + N sampled
