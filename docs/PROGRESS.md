@@ -8,7 +8,7 @@ Last updated: 2026-05-21
 |------|-------------|--------|-------|
 | 0 | Scaffolding | done | |
 | 1 | Data assembly | done | Eval set v0.1 locked: 1,912 cases. |
-| 2 | Inference (4 local models) | **running** | 2 of 4 models grinding; 2 pending download. |
+| 2 | Inference (4 local models) | **DONE** | All 4 models complete on 300-case eval set (N=3). |
 | 3 | Answer grading | next | LLM-judge vs ontology-fuzzy decision pending. |
 | 4 | Calibration analysis | not started | ECE + harm-weighted ECE per stratum. |
 | 5 | Abstention frontier | not started | |
