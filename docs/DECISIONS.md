@@ -294,3 +294,30 @@ High-acuity sub-conditions become small (will report per-condition n).
 superseded for the inference run.
 
 ---
+
+## D-024: Grading approach — LLM-as-judge with Gemma2 9B as neutral judge
+**Date:** 2026-05-28
+**Decision:** Multiple-choice (common stratum) graded by exact letter
+match. Open-ended (rare + high-acuity) graded by Gemma2 9B acting as a
+neutral judge, called at temperature 0 with a fixed prompt that asks
+"do these two diagnoses refer to the same clinical condition: [answer]
+vs [ground truth]?" The judge returns yes/no plus a one-line rationale.
+**Alternatives considered:** Ontology + fuzzy hybrid (OMIM/Orphanet
+synonym lookup + string similarity).
+**Reason:** Models output diverse phrasings ("Hyper IgE syndrome",
+"Job's syndrome", "Hyperimmunoglobulin E recurrent infection
+syndrome" — same condition). Ontology lookup misses synonyms not in
+HPO; fuzzy matching is brittle on long medical names. The high-acuity
+stratum has coarse ground-truth tags (e.g. "sepsis") that don't map
+cleanly to free-text answers via string methods. A semantic judge
+handles both stratum formats uniformly.
+**Mitigation of circularity:** Gemma2 9B grades the OTHER three models
+(Llama 3.1 8B, Qwen2.5 7B, MedGemma 4B). For grading Gemma2 9B's own
+answers, Llama 3.1 8B acts as the secondary judge. This avoids any
+model judging itself.
+**Reliability check:** A manual audit of ~150 judge decisions (50 per
+stratum) will be done to estimate judge agreement with human grading.
+**Determinism:** Judge temperature = 0, fixed seed, fixed prompt
+template. All judge calls cached like inference calls.
+
+---
