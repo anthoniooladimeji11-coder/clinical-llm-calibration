@@ -16,7 +16,7 @@ __pycache__/
 
 # Data and results (large files only)
 data/raw/
-results/
+results/*
 !results/*.meta.json
 *.csv
 *.parquet

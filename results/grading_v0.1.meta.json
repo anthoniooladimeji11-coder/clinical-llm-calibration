@@ -1,0 +1,84 @@
+{
+  "grading_version": "v0.1",
+  "eval_set": "data/processed/eval_set_v0.3_fast.jsonl",
+  "models": [
+    "llama-3.1-8b",
+    "qwen2.5-7b",
+    "gemma2-9b",
+    "medgemma-4b"
+  ],
+  "total_results": 1200,
+  "summary": {
+    "llama-3.1-8b": {
+      "common": {
+        "n": 100,
+        "correct": 64,
+        "accuracy": 0.64
+      },
+      "rare": {
+        "n": 100,
+        "correct": 53,
+        "accuracy": 0.53
+      },
+      "high_acuity": {
+        "n": 100,
+        "correct": 15,
+        "accuracy": 0.15
+      }
+    },
+    "qwen2.5-7b": {
+      "common": {
+        "n": 100,
+        "correct": 65,
+        "accuracy": 0.65
+      },
+      "rare": {
+        "n": 100,
+        "correct": 45,
+        "accuracy": 0.45
+      },
+      "high_acuity": {
+        "n": 100,
+        "correct": 9,
+        "accuracy": 0.09
+      }
+    },
+    "gemma2-9b": {
+      "common": {
+        "n": 100,
+        "correct": 56,
+        "accuracy": 0.56
+      },
+      "rare": {
+        "n": 100,
+        "correct": 69,
+        "accuracy": 0.69
+      },
+      "high_acuity": {
+        "n": 100,
+        "correct": 36,
+        "accuracy": 0.36
+      }
+    },
+    "medgemma-4b": {
+      "common": {
+        "n": 100,
+        "correct": 65,
+        "accuracy": 0.65
+      },
+      "rare": {
+        "n": 100,
+        "correct": 53,
+        "accuracy": 0.53
+      },
+      "high_acuity": {
+        "n": 100,
+        "correct": 14,
+        "accuracy": 0.14
+      }
+    }
+  },
+  "run_at_utc": "2026-06-02T19:06:44.216176+00:00",
+  "git_commit": "4b6584a35030b0365ba0a0c05de713b5a97a394e",
+  "notes": "Bulk grading with cross-judges (Gemma2 9B for non-Gemma2 models; Llama 3.1 8B for Gemma2). Noise filter and high-acuity-specific judge prompt active."
+}
