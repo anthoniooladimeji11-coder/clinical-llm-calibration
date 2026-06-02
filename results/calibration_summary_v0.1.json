@@ -1,0 +1,94 @@
+{
+  "llama-3.1-8b": {
+    "common": {
+      "n": 100,
+      "accuracy": 0.64,
+      "mean_confidence": 0.843,
+      "ece": 0.20700000000000002,
+      "calibration_gap": 0.20299999999999996
+    },
+    "rare": {
+      "n": 100,
+      "accuracy": 0.53,
+      "mean_confidence": 0.8454999999999999,
+      "ece": 0.3155,
+      "calibration_gap": 0.3154999999999999
+    },
+    "high_acuity": {
+      "n": 100,
+      "accuracy": 0.15,
+      "mean_confidence": 0.8695,
+      "ece": 0.7195,
+      "calibration_gap": 0.7195
+    }
+  },
+  "qwen2.5-7b": {
+    "common": {
+      "n": 100,
+      "accuracy": 0.65,
+      "mean_confidence": 0.9075,
+      "ece": 0.2755,
+      "calibration_gap": 0.25749999999999995
+    },
+    "rare": {
+      "n": 100,
+      "accuracy": 0.45,
+      "mean_confidence": 0.917,
+      "ece": 0.46699999999999997,
+      "calibration_gap": 0.467
+    },
+    "high_acuity": {
+      "n": 100,
+      "accuracy": 0.09,
+      "mean_confidence": 0.9425,
+      "ece": 0.8524999999999999,
+      "calibration_gap": 0.8525
+    }
+  },
+  "gemma2-9b": {
+    "common": {
+      "n": 100,
+      "accuracy": 0.56,
+      "mean_confidence": 0.8909999999999999,
+      "ece": 0.3330000000000001,
+      "calibration_gap": 0.33099999999999985
+    },
+    "rare": {
+      "n": 100,
+      "accuracy": 0.69,
+      "mean_confidence": 0.9185,
+      "ece": 0.2285000000000001,
+      "calibration_gap": 0.22850000000000004
+    },
+    "high_acuity": {
+      "n": 100,
+      "accuracy": 0.36,
+      "mean_confidence": 0.9375,
+      "ece": 0.5774999999999999,
+      "calibration_gap": 0.5775
+    }
+  },
+  "medgemma-4b": {
+    "common": {
+      "n": 98,
+      "accuracy": 0.6632653061224489,
+      "mean_confidence": 0.9566326530612246,
+      "ece": 0.29336734693877564,
+      "calibration_gap": 0.29336734693877564
+    },
+    "rare": {
+      "n": 100,
+      "accuracy": 0.53,
+      "mean_confidence": 0.9608,
+      "ece": 0.43079999999999996,
+      "calibration_gap": 0.43079999999999996
+    },
+    "high_acuity": {
+      "n": 99,
+      "accuracy": 0.1414141414141414,
+      "mean_confidence": 0.9661616161616162,
+      "ece": 0.8247474747474748,
+      "calibration_gap": 0.8247474747474748
+    }
+  }
+}
