@@ -9,8 +9,8 @@ Last updated: 2026-05-21
 | 0 | Scaffolding | done | |
 | 1 | Data assembly | done | Eval set v0.1 locked: 1,912 cases. |
 | 2 | Inference (4 local models) | **DONE** | All 4 models complete on 300-case eval set (N=3). |
-| 3 | Answer grading | next | LLM-judge vs ontology-fuzzy decision pending. |
-| 4 | Calibration analysis | not started | ECE + harm-weighted ECE per stratum. |
+| 3 | Answer grading | **done** | 1,200 case-model results graded; D-024 cross-judging applied. |
+| 4 | Calibration analysis | **in progress** | Reliability diagrams + ECE per stratum done; harm-weighted ECE pending Efosa. |
 | 5 | Abstention frontier | not started | |
 | 6 | Harm matrix rating | awaiting Efosa + graded pairs | Rubric v0.2 in review. |
 | 7 | Writing | not started | Target: npj Digital Medicine. |
