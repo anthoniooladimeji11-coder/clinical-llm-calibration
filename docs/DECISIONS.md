@@ -321,3 +321,23 @@ stratum) will be done to estimate judge agreement with human grading.
 template. All judge calls cached like inference calls.
 
 ---
+
+## D-025: UQ signals — lexical-only self-consistency and semantic entropy
+**Date:** 2026-06-03
+**Decision:** Compute self-consistency variance and "semantic entropy"
+using lexical (normalized-string) comparison of sampled answers, not
+embedding- or judge-based semantic clustering.
+**Alternatives considered:** Use an embedding model or an LLM-judge pass
+to cluster semantically equivalent answers (e.g. "PKU" and "Phenylketonuria")
+before computing entropy.
+**Reason:** No embedding model is in the local pipeline, and adding an
+LLM clustering pass would add ~900 more calls plus another layer of
+judge dependence. Lexical comparison is the baseline used in early
+self-consistency papers and is fully reproducible.
+**Risk:** Overestimates uncertainty when a model uses synonyms (e.g.
+"PKU" / "Phenylketonuria"). This biases UQ values upward on cases where
+the model is actually consistent. Reported as a methods limitation;
+future work can add embedding-based clustering.
+**Implemented in:** `src/calibration/uq_signals.py`.
+
+---
