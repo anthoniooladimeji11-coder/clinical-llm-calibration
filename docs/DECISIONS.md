@@ -361,3 +361,26 @@ meaningfully.
 **Stored in:** `scripts/28_figure_abstention_frontier.py`.
 
 ---
+
+## D-027: Harm rubric locked at v1.0 (Efosa confirmation)
+**Date confirmed by Iyawe:** 2026-05-25 (email: "this is confirmed")
+**Date locked in repo:** 2026-06-03
+**Decision:** Promote `configs/harm_rubric.yaml` from draft v0.2 to
+locked v1.0. This is the rubric we and the co-rater (Dr. Efosa Iyawe)
+will use for the harm-matrix rating.
+**Provenance trail:**
+  1. v0.1 drafted and emailed to Iyawe on 2026-05-18 (PDF attachment).
+  2. Iyawe feedback on 2026-05-22: change "well-resourced hospital" to
+     "standard hospital"; reorganize scale around an emergency vs.
+     non-emergency axis between levels 3 and 4; move pulmonary
+     embolism from 3 to 4.
+  3. v0.2 revised on 2026-05-21 and re-sent inline for confirmation.
+  4. Iyawe confirmed on 2026-05-25.
+**Note on the gap:** Rubric was kept at status `draft` in the repo
+from 2026-05-25 to 2026-06-03 because subsequent work focused on
+inference and calibration analysis. No rating decisions were taken
+during that period, so the gap does not affect any results.
+**Next step:** Phase 6 — generate the rating spreadsheet from the
+graded (true_dx, predicted_dx) pairs and send to Iyawe.
+
+---

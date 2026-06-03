@@ -59,3 +59,62 @@ parser:
   strip_think_tags: true
   # If strict parse fails, fall back to looser matching (documented in
   # the parser code). Cases where even fallback fails are flagged.
+
+# ---------------------------------------------------------------------
+# Judge prompt for open-ended grading (D-024)
+# ---------------------------------------------------------------------
+judge:
+  system_prompt: >
+    You are a clinical expert grading whether two diagnosis strings
+    refer to the same clinical condition. Be strict but accept clear
+    synonyms, common abbreviations, and recognized alternative names
+    for the same disease. Reject if the diagnoses refer to different
+    conditions, even if related.
+  template: |
+    Do these two diagnoses refer to the same clinical condition?
+
+    Diagnosis A (model's answer): {answer}
+    Diagnosis B (ground truth):   {ground_truth}
+
+    Respond with EXACTLY this format on two lines:
+    VERDICT: <YES or NO>
+    REASON: <one short sentence>
+
+# ---------------------------------------------------------------------
+# Judge prompt for HIGH-ACUITY cases (D-024 refinement)
+# Ground truth here is a coarse condition tag (e.g. "acute_mi").
+# We want the judge to accept any clinically valid presentation of that
+# specific acute condition, but reject related/complication answers.
+# ---------------------------------------------------------------------
+judge_high_acuity:
+  system_prompt: >
+    You are a clinical expert. You will see a model's free-text diagnosis
+    and a coarse ground-truth condition category for an acute clinical
+    presentation. Decide whether the model's diagnosis is a clinically
+    valid name for THIS specific acute condition. Accept clear synonyms,
+    abbreviations, and standard subtype names. Reject related conditions,
+    complications, or different diseases — even if plausible from the
+    same vignette.
+  template: |
+    Coarse ground-truth condition: {ground_truth}
+
+    Model's diagnosis: {answer}
+
+    Reference for what counts as a match (examples):
+      acute_mi              -> STEMI, NSTEMI, acute MI, acute coronary syndrome with infarction
+      ischemic_stroke       -> acute ischemic stroke, cerebral infarction, large vessel occlusion
+      hemorrhagic_stroke    -> ICH, intracerebral hemorrhage, SAH, subarachnoid hemorrhage
+      sepsis                -> sepsis, septic shock, severe sepsis, septicaemia
+      pulmonary_embolism    -> PE, acute pulmonary embolism, massive/submassive PE
+      diabetic_emergency    -> DKA, diabetic ketoacidosis, HHS, hyperosmolar hyperglycemic state
+      acute_pulmonary_oedema-> acute pulmonary oedema/edema, flash pulmonary oedema/edema, cardiogenic pulmonary oedema
+      acute_pancreatitis    -> acute pancreatitis (any severity / subtype)
+      shock                 -> cardiogenic / hypovolemic / distributive / anaphylactic / hemorrhagic shock
+
+    Reject if the diagnosis is a related condition, a complication, or
+    a different disease (e.g. "right ventricular failure" is NOT
+    acute_mi; "pheochromocytoma" is NOT acute_pulmonary_oedema).
+
+    Respond with EXACTLY this format on two lines:
+    VERDICT: <YES or NO>
+    REASON: <one short sentence>
