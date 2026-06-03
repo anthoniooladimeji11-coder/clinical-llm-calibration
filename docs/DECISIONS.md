@@ -341,3 +341,23 @@ future work can add embedding-based clustering.
 **Implemented in:** `src/calibration/uq_signals.py`.
 
 ---
+
+## D-026: Drop semantic entropy as a separate UQ method (degenerate at N=3)
+**Date:** 2026-06-03
+**Decision:** Report two UQ methods in the abstention frontier:
+verbalized confidence and self-consistency variance. Drop semantic
+entropy as a separately reported method.
+**Reason:** With N=3 sampled answers (D-023), lexical semantic entropy
+and self-consistency variance are near-degenerate — they ranked all
+1,200 case-model rows identically to three decimal places. Reporting
+both as distinct UQ methods would overstate the diversity of signals
+compared.
+**Risk:** Removes one of the four UQ methods originally proposed. The
+remaining two are still genuinely different — verbalized is a self-report
+made on a single deterministic call; variance measures behavioural
+consistency across stochastic samples. A footnote in the paper notes
+this and points to future work at higher N where entropy diverges
+meaningfully.
+**Stored in:** `scripts/28_figure_abstention_frontier.py`.
+
+---
