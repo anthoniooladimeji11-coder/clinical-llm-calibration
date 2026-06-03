@@ -7,12 +7,18 @@
 #  - Level definitions sharpened to clinical logic
 #  - Pulmonary embolism corrected from 3 to 4 (it is an emergency)
 #
-# Last edited: 2026-05-21
-# Status: DRAFT v0.2 — pending Efosa confirmation, then lock
+# Last edited: 2026-06-03
+# Status: LOCKED v1.0
+# Provenance:
+#   - v0.1 drafted 2026-05-18, sent to E. Iyawe by email
+#   - Iyawe feedback received 2026-05-22 (standard hospital, emergency axis, PE=4)
+#   - v0.2 revised 2026-05-21, re-sent inline for confirmation
+#   - Iyawe confirmation received 2026-05-25 ('this is confirmed')
+#   - v1.0 locked in repo 2026-06-03
 # =====================================================================
 
-version: "0.2"
-status: draft
+version: "1.0"
+status: locked
 
 framing:
   primary: >
